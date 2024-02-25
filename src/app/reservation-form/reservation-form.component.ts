@@ -32,11 +32,15 @@ export class ReservationFormComponent implements OnInit {
   })
   // get the id from the route
   let id = this.activatedRoute.snapshot.paramMap.get('id');
+
   if (id){
-    let reservation = this.reservationService.getReservation(id);
-    if(reservation){
-    // patching the value from a reservation object if we have a reservation
-    this.reservationForm.patchValue(reservation); }
+    this.reservationService.getReservation(id).subscribe(reservation=> {
+      if(reservation){
+        // patching the value from a reservation object if we have a reservation
+        this.reservationForm.patchValue(reservation);
+      }
+    });
+
   }
 }
 
@@ -48,11 +52,15 @@ export class ReservationFormComponent implements OnInit {
       if(id){
         let id = this.activatedRoute.snapshot.paramMap.get('id');
         if(id){
-        this.reservationService.updateReservation(id ,reservation);}
+        this.reservationService.updateReservation(id ,reservation).subscribe(()=>{
+          console.log('reservation update processed')
+        });}
       }
       else{
         //add a new reservation
-        this.reservationService.addReservation(reservation);
+        this.reservationService.addReservation(reservation).subscribe(()=> {
+          console.log("reservation add processed")
+        });
 
       }
       //route user to list component after adding a reservation
